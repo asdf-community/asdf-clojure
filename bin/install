@@ -32,7 +32,7 @@ installer() {
 #!/usr/bin/env bash
 current_script_path=\${BASH_SOURCE[0]}
 asdf_clojure=\$(dirname \$(dirname \$current_script_path))
-exec java -cp "\$asdf_clojure/clojure-${version}.jar:$CLASSPATH" "$ASDF_CLOJURE_JAVA_ARGS" clojure.main \$*
+exec java \$ASDF_CLOJURE_JAVA_ARGS -cp "\$asdf_clojure/clojure-${version}.jar:\$CLASSPATH" clojure.main \$*
 EOF
     chmod 755 $install_path/bin/clojure
 
