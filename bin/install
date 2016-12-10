@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+installer() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+
+  local tmp_download_dir=$(mktemp -d -t clojure_XXXXXXX)
+
+  if ! which java >/dev/null; then
+    echo "You need a Java Runtime already installed on your computer."
+    echo "Follow the instructions for your platform or download it"
+    echo "from http://java.com/en/download"
+    exit 1
+  fi
+
+  if [ "version" != "${install_type}" ]; then
+    echo "The asdf-clojure plugin only supports intalling official"
+    echo "binary releases as built by the clojure team."
+    echo "If you want to install another version from source, see:"
+    echo "https://github.com/clojure/clojure/"
+    exit 1
+  fi
+
+  # running this in a subshell
+  # we don't want to disturb current working dir
+  (
+    set -e
+    mkdir -p $install_path/bin
+
+    cat <<EOF > $install_path/bin/clojure
+#!/usr/bin/env bash
+current_script_path=\${BASH_SOURCE[0]}
+asdf_clojure=\$(dirname \$(dirname \$current_script_path))
+exec java -cp \$asdf_clojure/clojure-${version}.jar clojure.main \$*
+EOF
+    chmod 755 $install_path/bin/clojure
+
+    local jar_path=$(downloaded_file_path $install_type $version $tmp_download_dir)
+    curl -Lo "$jar_path" "$(jar_download_url $version)"
+
+    mv $jar_path $install_path/clojure-${version}.jar
+
+  ) || (rm -rf $install_path; exit 1)
+}
+
+downloaded_file_path() {
+  local install_type=$1
+  local version=$2
+  local tmp_download_dir=$3
+  local pkg_name="clojure-${version}.jar"
+  echo "$tmp_download_dir/$pkg_name"
+}
+
+jar_download_url() {
+  local version=$1
+  echo "http://repo1.maven.org/maven2/org/clojure/clojure/${version}/clojure-${version}.jar"
+}
+
+installer $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
