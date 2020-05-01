@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mvn_releases=http://repo1.maven.org/maven2/org/clojure/clojure/
+mvn_releases=https://repo1.maven.org/maven2/org/clojure/clojure/
 
 # stolen from https://github.com/rbenv/ruby-build/pull/631/files#diff-fdcfb8a18714b33b07529b7d02b54f1dR942
 function sort_versions() {
