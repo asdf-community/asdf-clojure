@@ -5,7 +5,8 @@ installer() {
   local version=$2
   local install_path=$3
 
-  local tmp_download_dir=$(mktemp -d -t clojure_XXXXXXX)
+  local tmp_download_dir
+  tmp_download_dir=$(mktemp -d -t clojure_XXXXXXX)
 
   if ! which java >/dev/null; then
     echo "You need a Java Runtime already installed on your computer."
@@ -26,20 +27,24 @@ installer() {
   # we don't want to disturb current working dir
   (
     set -e
-    mkdir -p $install_path/bin
+    mkdir -p "${install_path}/bin"
 
-    cat <<EOF > $install_path/bin/clojure
+    cat <<EOF >"${install_path}/bin/clojure"
 #!/usr/bin/env bash
 exec java \$ASDF_CLOJURE_JAVA_ARGS -cp "${install_path}/clojure-${version}.jar:\$CLASSPATH" clojure.main \$*
 EOF
-    chmod 755 $install_path/bin/clojure
+    chmod 755 "${install_path}/bin/clojure"
 
-    local jar_path=$(downloaded_file_path $install_type $version $tmp_download_dir)
-    curl -Lo "$jar_path" "$(jar_download_url $version)"
+    local jar_path
+    jar_path=$(downloaded_file_path "$install_type" "$version" "$tmp_download_dir")
+    curl -Lo "$jar_path" "$(jar_download_url "$version")"
 
-    mv $jar_path $install_path/clojure-${version}.jar
+    mv "$jar_path" "${install_path}/clojure-${version}.jar"
 
-  ) || (rm -rf $install_path; exit 1)
+  ) || (
+    rm -rf "$install_path"
+    exit 1
+  )
 }
 
 downloaded_file_path() {
@@ -55,4 +60,4 @@ jar_download_url() {
   echo "http://repo1.maven.org/maven2/org/clojure/clojure/${version}/clojure-${version}.jar"
 }
 
-installer $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+installer "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
