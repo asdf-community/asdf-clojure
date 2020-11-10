@@ -57,7 +57,7 @@ downloaded_file_path() {
 
 jar_download_url() {
   local version=$1
-  echo "http://repo1.maven.org/maven2/org/clojure/clojure/${version}/clojure-${version}.jar"
+  echo "https://repo1.maven.org/maven2/org/clojure/clojure/${version}/clojure-${version}.jar"
 }
 
 installer "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
