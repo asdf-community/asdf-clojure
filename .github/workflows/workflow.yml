@@ -18,6 +18,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Use Java 11.x
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
       - name: asdf_plugin_test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
