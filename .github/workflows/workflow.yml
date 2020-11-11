@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Use Java 11.x
+      - name: Use Java 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
@@ -28,7 +28,7 @@ jobs:
           GITHUB_API_TOKEN: ${{ github.token }}
         uses: asdf-vm/actions/plugin-test@v1
         with:
-          command: clojure -e '(clojure-version)'
+          command: clojure -e nil
 
   lint:
     runs-on: ubuntu-latest
