@@ -1,63 +1,45 @@
 #!/usr/bin/env bash
 
-installer() {
+set -euo pipefail
+
+fail() {
+  echo -e "\e[31mFail:\e[m $*"
+  exit 1
+}
+
+install() {
   local install_type=$1
   local version=$2
   local install_path=$3
 
+  if [ "$install_type" != "version" ]; then
+    fail "asdf-clojure supports release installs only"
+  fi
+
+  local download_url="https://download.clojure.org/install/clojure-tools-${version}.tar.gz"
+  local file_name="clojure-tools-${version}.tar.gz"
   local tmp_download_dir
-  tmp_download_dir=$(mktemp -d -t clojure_XXXXXXX)
+  tmp_download_dir=$(mktemp -d -t clojure_tmp_XXXXXX)
+  local source_path="${tmp_download_dir}/${file_name}"
+  local distination_path="${tmp_download_dir}/dist"
 
-  if ! which java >/dev/null; then
-    echo "You need a Java Runtime already installed on your computer."
-    echo "Follow the instructions for your platform or download it"
-    echo "from http://java.com/en/download"
-    exit 1
-  fi
-
-  if [ "version" != "${install_type}" ]; then
-    echo "The asdf-clojure plugin only supports intalling official"
-    echo "binary releases as built by the clojure team."
-    echo "If you want to install another version from source, see:"
-    echo "https://github.com/clojure/clojure/"
-    exit 1
-  fi
-
-  # running this in a subshell
-  # we don't want to disturb current working dir
   (
-    set -e
-    mkdir -p "${install_path}/bin"
+    curl --silent --location --output "$source_path" -C - "$download_url" || fail "Could not download Clojure installer for $version"
+    mkdir -p "$distination_path"
+    tar zxf "$source_path" -C "$distination_path" --strip-components=1
 
-    cat <<EOF >"${install_path}/bin/clojure"
-#!/usr/bin/env bash
-exec java \$ASDF_CLOJURE_JAVA_ARGS -cp "${install_path}/clojure-${version}.jar:\$CLASSPATH" clojure.main \$*
-EOF
-    chmod 755 "${install_path}/bin/clojure"
+    cd "$distination_path"
+    grep -v -i ruby install.sh >install-without-ruby.sh
+    sed -i.bak "s|PREFIX|\"${install_path}\"|g" clojure
 
-    local jar_path
-    jar_path=$(downloaded_file_path "$install_type" "$version" "$tmp_download_dir")
-    curl -Lo "$jar_path" "$(jar_download_url "$version")"
-
-    mv "$jar_path" "${install_path}/clojure-${version}.jar"
-
+    mkdir -p "$install_path"
+    chmod +x install-without-ruby.sh
+    ./install-without-ruby.sh "$install_path"
   ) || (
     rm -rf "$install_path"
-    exit 1
+    fail "An error occurred"
   )
+  rm -rf "$tmp_download_dir"
 }
 
-downloaded_file_path() {
-  local install_type=$1
-  local version=$2
-  local tmp_download_dir=$3
-  local pkg_name="clojure-${version}.jar"
-  echo "$tmp_download_dir/$pkg_name"
-}
-
-jar_download_url() {
-  local version=$1
-  echo "http://repo1.maven.org/maven2/org/clojure/clojure/${version}/clojure-${version}.jar"
-}
-
-installer "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+install "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
