@@ -1,26 +1,35 @@
 # asdf-clojure
-[![help maintain this lib](https://img.shields.io/badge/looking%20for%20maintainer-DM%20%40vborja-663399.svg)](https://twitter.com/vborja)
 
+[Clojure](http://clojure.org) plugin for [asdf](https://github.com/asdf-vm/asdf)
+version manager
 
-[Clojure](http://clojure.org) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
+## Build History
 
+[![Build history](https://buildstats.info/github/chart/asdf-community/asdf-clojure?branch=master)](https://github.com/asdf-community/asdf-clojure/actions)
 
-## Install
+## Prerequirements
+
+- Make sure you have the required dependencies installed:
+  - curl
+  - git
+  - rlwrap
+  - Java runtime
+    - You need to have a Java Runtime already installed on your system. Download
+      it from http://java.com/en/download or follow the instructions for your
+      platform.
+
+## Installation
 
 ```shell
-asdf plugin-add clojure https://github.com/vic/asdf-clojure.git
+asdf plugin add clojure https://github.com/asdf-community/asdf-clojure.git
 ```
 
-## Requirements
+## Usage
 
-#### Java Runtime
+Check [asdf](https://github.com/asdf-vm/asdf) readme for instructions on how to
+install & manage versions.
 
-You need to have a Java Runtime already installed on your system.
-Download it from http://java.com/en/download or follow the instructions
-for your platform.
+## License
 
-## Use
-
-Check [asdf](https://github.com/asdf-vm/asdf) readme for instructions on how to install & manage versions of Clojure.
-
-Upon installation a `clojure` executable will be set by `asdf` on your path.
+Licensed under the
+[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
