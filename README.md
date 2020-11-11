@@ -1,7 +1,7 @@
 # asdf-clojure
 
-[Clojure](http://clojure.org) plugin for [asdf](https://github.com/asdf-vm/asdf)
-version manager
+[Clojure](http://clojure.org) plugin for the
+[asdf](https://github.com/asdf-vm/asdf) version manager
 
 ## Build History
 
