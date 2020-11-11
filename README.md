@@ -15,7 +15,7 @@
   - rlwrap
   - Java runtime
     - You need to have a Java Runtime already installed on your system. Download
-      it from http://java.com/en/download or follow the instructions for your
+      it from https://java.com/en/download or follow the instructions for your
       platform.
 
 ## Installation
