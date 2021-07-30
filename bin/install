@@ -31,6 +31,7 @@ install() {
     cd "$distination_path"
     grep -v -i ruby install.sh >install-without-ruby.sh
     sed -i.bak "s|PREFIX|\"${install_path}\"|g" clojure
+    sed -i.bak "s|BINDIR|\"${install_path}/bin\"|g" clj
 
     mkdir -p "$install_path"
     chmod +x install-without-ruby.sh
