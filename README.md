@@ -24,6 +24,14 @@
 asdf plugin add clojure https://github.com/asdf-community/asdf-clojure.git
 ```
 
+```shell
+asdf install clojure latest
+```
+
+```shell
+asdf global clojure <version>
+```
+
 ## Usage
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for instructions on how to
